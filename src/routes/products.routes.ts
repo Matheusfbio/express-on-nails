@@ -1,37 +1,54 @@
+import connection from "db/connection";
 import { Router } from "express";
-import { Pool } from "pg";
-
-const pool = new Pool({
-  user: "matheusfabio",
-  password: "12345",
-  host: "localhost",
-  port: 5433,
-  database: "crud-user",
-});
 
 const router = Router();
 
-router.get("/products", async (req, res) => {
+router.get("/products", async (request, response) => {
   try {
-    const result = await pool.query("SELECT * FROM products ORDER BY id ASC");
-    res.json(result.rows);
+    const getProducts = await connection.query(
+      "SELECT * FROM products ORDER BY id ASC",
+    );
+    response.json(getProducts.rows);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Internal server error" });
+    response.status(500).json({ error: "Internal server error" });
   }
 });
 
-router.get("/products/:id", async (req, res) => {
+router.get("/products/:id", async (request, response) => {
   try {
-    const { id } = req.params;
-    const result = await pool.query("SELECT * FROM products WHERE id = $1", [id]);
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Product not found" });
+    const { id } = request.params;
+    const getProductsById = await connection.query(
+      "SELECT * FROM products WHERE id = $1",
+      [id],
+    );
+    if (getProductsById.rows.length === 0) {
+      return response.status(404).json({ error: "Product not found" });
     }
-    res.json(result.rows[0]);
+    response.json(getProductsById.rows[0]);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Internal server error" });
+    response.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.post("/products", async (request, response) => {
+  try {
+    const { name, price } = request.body;
+    const createProduct = await connection.query(
+      "INSERT INTO products(name, price) VALUES($1, $2) RETURNING *",
+      [name, price],
+      (error, results) => {
+        if (error) {
+          throw error;
+        }
+        response
+          .status(201)
+          .send(`Product created with Id: ${results.rows[0].id}`);
+      },
+    );
+  } catch (error) {
+    console.error(`Details error: ${error}`);
   }
 });
 

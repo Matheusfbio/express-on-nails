@@ -1,0 +1,19 @@
+###
+GET http://localhost:3001/
+
+###
+GET http://localhost:3001/api/products
+
+###
+GET http://localhost:3001/api/products/2
+
+
+###
+POST  http://localhost:3001/api/products
+Content-Type: application/json
+
+{
+  "name": "sugar",
+  "price": "122.00"
+}
+
