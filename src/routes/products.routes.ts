@@ -1,4 +1,4 @@
-import connection from "db/connection";
+import connection from "../db/connection";
 import { Router } from "express";
 
 const router = Router();
@@ -35,20 +35,41 @@ router.get("/products/:id", async (request, response) => {
 router.post("/products", async (request, response) => {
   try {
     const { name, price } = request.body;
-    const createProduct = await connection.query(
-      "INSERT INTO products(name, price) VALUES($1, $2) RETURNING *",
+    const result = await connection.query(
+      "INSERT INTO products (name, price) VALUES ($1, $2) RETURNING *",
       [name, price],
-      (error, results) => {
-        if (error) {
-          throw error;
-        }
-        response
-          .status(201)
-          .send(`Product created with Id: ${results.rows[0].id}`);
-      },
     );
+    response.status(201).json({
+      message: "Product created successfully",
+      product: result.rows[0],
+    });
   } catch (error) {
     console.error(`Details error: ${error}`);
+    response.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.patch("/products/:id", async (request, response) => {
+  try {
+    const { id } = request.params;
+    const { name, price } = request.body;
+    // Issue 1: The SQL query has incorrect syntax - "SET" appears twice and parameter placeholders are wrong
+    // Issue 2: The values array order doesn't match the parameter placeholders in the query
+    // Issue 3: The success message says "Product created successfully" but this is an update operation
+    const values = [name, price, id];
+    const queryText = "UPDATE products SET name = $1, price = $2 WHERE id = $3";
+    const updateProductsById = await connection.query(queryText, values);
+    if (updateProductsById.rowCount === 0) {
+      return response.status(404).json({ error: "Product not found" });
+    }
+
+    response.status(200).json({
+      message: "Product updated successfully",
+      product: updateProductsById.rows[0],
+    });
+  } catch (error) {
+    console.error(error);
+    response.status(500).json({ error });
   }
 });
 

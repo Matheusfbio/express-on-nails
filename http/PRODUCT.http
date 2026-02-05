@@ -5,7 +5,7 @@ GET http://localhost:3001/
 GET http://localhost:3001/api/products
 
 ###
-GET http://localhost:3001/api/products/2
+GET http://localhost:3001/api/products/30
 
 
 ###
@@ -15,5 +15,14 @@ Content-Type: application/json
 {
   "name": "sugar",
   "price": "122.00"
+}
+
+###
+PATCH http://localhost:3001/api/products/30
+Content-Type: application/json
+
+{
+  "name": "kajskdlasd",
+  "price": "123"
 }
 
