@@ -5,7 +5,7 @@ GET http://localhost:3001/
 GET http://localhost:3001/api/products
 
 ###
-GET http://localhost:3001/api/products/30
+GET http://localhost:3001/api/products
 
 
 ###
@@ -18,11 +18,14 @@ Content-Type: application/json
 }
 
 ###
-PATCH http://localhost:3001/api/products/30
+PATCH http://localhost:3001/api/products/5e758b40-6c51-48c7-b909-49cb4ea6c85d
 Content-Type: application/json
 
 {
-  "name": "kajskdlasd",
-  "price": "123"
+  "name": "Happy sugar",
+  "price": 6.00
 }
 
+
+###
+DELETE http://localhost:3001/api/products/549c0671-f828-495c-9a8b-6df1fdfa6833

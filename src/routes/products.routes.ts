@@ -1,3 +1,4 @@
+import { error } from "node:console";
 import connection from "../db/connection";
 import { Router } from "express";
 
@@ -53,11 +54,9 @@ router.patch("/products/:id", async (request, response) => {
   try {
     const { id } = request.params;
     const { name, price } = request.body;
-    // Issue 1: The SQL query has incorrect syntax - "SET" appears twice and parameter placeholders are wrong
-    // Issue 2: The values array order doesn't match the parameter placeholders in the query
-    // Issue 3: The success message says "Product created successfully" but this is an update operation
     const values = [name, price, id];
-    const queryText = "UPDATE products SET name = $1, price = $2 WHERE id = $3";
+    const queryText =
+      "UPDATE products SET name = $1, price = $2 WHERE id = $3 RETURNING *";
     const updateProductsById = await connection.query(queryText, values);
     if (updateProductsById.rowCount === 0) {
       return response.status(404).json({ error: "Product not found" });
@@ -69,7 +68,30 @@ router.patch("/products/:id", async (request, response) => {
     });
   } catch (error) {
     console.error(error);
-    response.status(500).json({ error });
+    response.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.delete("/products/:id", async (request, response) => {
+  try {
+    const { id } = request.params;
+    const queryText = "DELETE FROM products WHERE id = $1 RETURNING *";
+    const deleteProductsById = await connection.query(
+      "DELETE FROM products WHERE id = $1 RETURNING *",
+      [id],
+    );
+
+    if (deleteProductsById.rowCount === 0) {
+      return response.status(404).json({ error: "Product not found" });
+    }
+
+    response.status(200).json({
+      message: "Product deleted successfully",
+      product: deleteProductsById.rows[0],
+    });
+  } catch (error) {
+    console.error(error);
+    response.status(500).json({ error: error });
   }
 });
 
