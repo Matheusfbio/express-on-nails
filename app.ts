@@ -4,7 +4,8 @@ import express, { Router } from "express";
 //for  middleware
 import bodyParser from "body-parser";
 import cors from "cors";
-// import ProductsRouter from "@routes/products.routes";
+import ProductsRouter from "@routes/products.routes";
+import UsersRouter from "@routes/user.routes";
 const app = express();
 
 const port = process.env.PORT || 3001;
@@ -14,14 +15,16 @@ app.use(
     extended: true,
   }),
 );
-app.use(express.json());
-app.use(cors);
 
-app.use("/", (req, res) => {
-  res.send("Welcome");
+app.use(express.json());
+app.use(cors());
+
+app.get("/", (request, response) => {
+  response.json("Welcome the express on nails");
 });
 
-// app.use("/api", ProductsRouter);
+app.use("/api", ProductsRouter);
+app.use("/api", UsersRouter);
 
 app.listen(port, () => {
   console.log(`Server is runnnig on port http://localhost:${port}`);
