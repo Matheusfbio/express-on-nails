@@ -1,4 +1,3 @@
-import { error } from "node:console";
 import connection from "../db/connection";
 import { Router } from "express";
 

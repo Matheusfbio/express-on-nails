@@ -5,6 +5,7 @@ import express, { Router } from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import ProductsRouter from "@routes/products.routes";
+import UsersRouter from "@routes/user.routes";
 const app = express();
 
 const port = process.env.PORT || 3001;
@@ -23,6 +24,7 @@ app.get("/", (request, response) => {
 });
 
 app.use("/api", ProductsRouter);
+app.use("/api", UsersRouter);
 
 app.listen(port, () => {
   console.log(`Server is runnnig on port http://localhost:${port}`);

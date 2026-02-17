@@ -2,15 +2,16 @@
 GET http://localhost:3001/
 
 ###
-GET http://localhost:3001/api/products
+GET http://localhost:3001/api/users
 
 ###
-POST  http://localhost:3001/api/products
+POST  http://localhost:3001/api/users
 Content-Type: application/json
 
 {
-  "name": "sugar",
-  "price": "122.00"
+  "username": "MAtheus",
+  "password": "123456",
+  "role": "USER"
 }
 
 ###
