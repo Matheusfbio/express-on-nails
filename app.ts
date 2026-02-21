@@ -26,6 +26,9 @@ app.get("/", (request, response) => {
 app.use("/api", ProductsRouter);
 app.use("/api", UsersRouter);
 
+const envFile = `.env.${process.env.NODE_ENV || "dev"}`;
+console.log(`Running in ${envFile} environment`);
+
 app.listen(port, () => {
   console.log(`Server is runnnig on port http://localhost:${port}`);
 });

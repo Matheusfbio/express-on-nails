@@ -10,7 +10,3 @@ CREATE TABLE users (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- -- Inserir usuário de exemplo
--- INSERT INTO users (username, password, role) VALUES
---   ('admin', '$2b$10$hash_aqui', 'admin'),
---   ('user1', '$2b$10$hash_aqui', 'user');
